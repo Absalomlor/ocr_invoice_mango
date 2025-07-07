@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pdf2image
+pillow
+pandas
+requests
+python-dotenv
+PyPDF2
