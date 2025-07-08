@@ -10,6 +10,7 @@ import pandas as pd
 import ast
 import os
 from dotenv import load_dotenv
+import streamlit as st
 
 load_dotenv()
 
@@ -171,6 +172,11 @@ def run_ocr_on_pdf(pdf_file: BytesIO, start_page, end_page):
             merged_rows.append(result)
 
     df = pd.DataFrame(merged_rows)
+
+    if 'tax_invoice_number' not in df.columns:
+        st.warning("ไม่พบเลขที่ใบกำกับภาษี (tax_invoice_number) ในผล OCR")
+        return all_results_json, pd.DataFrame()
+    
     df_grouped = df.groupby('tax_invoice_number').agg({
         'Page': 'first',
         'document_type': 'first',
