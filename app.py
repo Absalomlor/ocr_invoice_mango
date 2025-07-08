@@ -9,7 +9,7 @@ from PyPDF2 import PdfReader
 # FastAPI App 
 app = FastAPI(title="OCR Tax Invoice Service")
 
-@app.post("/ocr/json")
+@app.post("/json")
 async def ocr_json(
     file: UploadFile = File(...),
     start_page: int = Form(...),
@@ -23,7 +23,7 @@ async def ocr_json(
     return JSONResponse(content=json_data)
 
 
-@app.post("/ocr/csv")
+@app.post("/csv")
 async def ocr_csv(
     file: UploadFile = File(...),
     start_page: int = Form(...),
