@@ -1,6 +1,7 @@
 import requests
 import base64
-from pdf2image import convert_from_bytes
+import fitz
+from PIL import Image
 import json
 import re
 import time
@@ -102,8 +103,21 @@ def extract_and_clean_json(text):
             return None
     return None
 
+def convert_pdf_to_images(pdf_bytes, dpi=300):
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    images = []
+    zoom = dpi / 72 
+    mat = fitz.Matrix(zoom, zoom)
+    for page in doc:
+        pix = page.get_pixmap(matrix=mat)
+        img = Image.open(BytesIO(pix.tobytes("png")))
+        images.append(img)
+    return images
+
 def run_ocr_on_pdf(pdf_file: BytesIO, start_page, end_page):
-    images = convert_from_bytes(pdf_file.read(), dpi=300)
+    pdf_bytes = pdf_file.read()
+    images = convert_pdf_to_images(pdf_bytes, dpi=300)
+    
     selected_images = images[start_page - 1:end_page]
 
     all_results = []
@@ -132,7 +146,6 @@ def run_ocr_on_pdf(pdf_file: BytesIO, start_page, end_page):
             if extracted:
                 extracted['Page'] = idx
                 all_results.append(extracted)
-
         time.sleep(1)
 
     all_results_json = [r.copy() for r in all_results]
