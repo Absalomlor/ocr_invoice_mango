@@ -172,7 +172,7 @@ def run_ocr_on_pdf(pdf_file: BytesIO, start_page, end_page):
         'vat_amount': 'first',
         'grand_total': 'first',
         'has_tax_invoice': 'first',
-        'has_signature': 'first',
+        'has_signature': 'last',
         'Description': lambda x: '\n'.join(x.dropna().astype(str)),
         'Quantity': lambda x: '\n'.join(x.dropna().astype(str)),
         'Unit Price': lambda x: '\n'.join(x.dropna().astype(str)),
